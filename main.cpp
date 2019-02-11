@@ -12,19 +12,29 @@
 #include <vtkCamera.h>
 #include <vtkNew.h>
 #include <vtkFloatArray.h>
-
+#include <vtkImageReader.h>
 #include <string>
 
 int main(int argc, char *argv[])
 {
-  std::string strFolder = "\\DICOM\\D201510\\DD1412"; //put your directory path here
+  //std::string strFolder = "\\DICOM\\D201510\\DD1412"; //put your directory path here
   
-  vtkNew<vtkImageData> imageData;
-  vtkNew<vtkDICOMImageReader> reader;
-  // read the dicom dir
-  reader->SetDirectoryName(strFolder.c_str());
-  reader->Update();
-  imageData->ShallowCopy(reader->GetOutput());
+  //vtkNew<vtkImageData> imageData;
+  
+	//vtkNew<vtkDICOMImageReader> reader;
+ // // read the dicom dir
+ // reader->SetDirectoryName(strFolder.c_str());
+ // reader->Update();
+ // imageData->ShallowCopy(reader->GetOutput());
+
+	std::string strFile = "C:\\Users\\eramirez\\Desktop\\Skeletonization\\DistalGlobalSegAprox_16_01_2018_Complex0.raw"; //put your directory path here
+	vtkSmartPointer<vtkImageReader> reader = vtkSmartPointer<vtkImageReader>::New();
+	reader->SetFileName(strFile.c_str());
+	reader->SetDataScalarTypeToFloat();
+	reader->SetFileDimensionality(3);
+	reader->SetDataExtent(0, 286, 0, 380, 0, 643);
+	reader->SetHeaderSize(0);
+	reader->Update();
 
   // properties options
   vtkNew<vtkVolumeProperty> volumeProperty;
@@ -41,13 +51,13 @@ int main(int argc, char *argv[])
   colorTF->AddRGBPoint(-200, 0.0, 0.0, 0.0);
   colorTF->AddRGBPoint(110, 0.4, 0.4, 1.0);
   colorTF->AddRGBPoint(512, 1.0, 1.0, 1.0);
-  colorTF->AddRGBPoint(range[1], 0.9, 0.1, 0.1);
+  colorTF->AddRGBPoint(range[1], 0.9, 0.1, 0.3);
 
   vtkNew<vtkPiecewiseFunction> scalarTF;
   scalarTF->AddPoint(-200, 0.00);
   scalarTF->AddPoint(110, 0.00);
   scalarTF->AddPoint(512, 0.5);
-  scalarTF->AddPoint(range[1], 0.4);
+  scalarTF->AddPoint(range[1], 0.9);
 
   vtkNew<vtkPiecewiseFunction> gradientTF;
   gradientTF->AddPoint(-200, 0.0);
